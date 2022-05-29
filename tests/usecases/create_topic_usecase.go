@@ -27,36 +27,28 @@ func (o *TopicGatewaySpy) Create(name string) string {
 
 var _ = Describe("Create Topic", func() {
 	var topicGatewaySpy *TopicGatewaySpy
+	var usecase *usecases.CreateTopicUsecase
 
 	BeforeEach(func() {
+		usecase = usecases.NewCreateTopicUsecase()
 		topicGatewaySpy = &TopicGatewaySpy{}
 		config.Context = config.ContextType{
 			TopicGateway: topicGatewaySpy,
 		}
 	})
 
-	It("can run", func() {
-		usecase := usecases.NewCreateTopicUsecase()
-		usecase.Execute()
-		Expect(true).To(Equal(true))
-	})
-
-	It("calls repo", func() {
-		usecase := usecases.NewCreateTopicUsecase()
+	It("calls repo for creating topic", func() {
 		usecase.Execute()
 		Expect(topicGatewaySpy.CreateMetadata.IsCalled).To(Equal(true))
 	})
 
 	It("create topic with default name", func() {
 		defaultName := "Untitled"
-		usecase := usecases.NewCreateTopicUsecase()
 		usecase.Execute()
-		Expect(topicGatewaySpy.CreateMetadata.IsCalled).To(Equal(true))
 		Expect(topicGatewaySpy.CreateMetadata.NameParam).To(Equal(defaultName))
 	})
 
 	It("returns topic id", func() {
-		usecase := usecases.NewCreateTopicUsecase()
 		Expect(usecase.Execute()).To(Equal(idFromCreateMethod))
 	})
 })
